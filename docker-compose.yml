@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+
+  # ================================
+  # SERVICE 1 : MySQL
+  # Pas besoin de Dockerfile — image officielle directe
+  # ================================
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-fabrication
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fabrication_db
+    ports:
+      - "3306:3306"
+    volumes:
+      # Persiste les données même si le conteneur est arrêté
+      - mysql_data:/var/lib/mysql
+    networks:
+      - fabrication-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ================================
+  # SERVICE 2 : Backend Spring Boot
+  # Utilise le Dockerfile dans le dossier backend/
+  # ================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend-fabrication
+    ports:
+      - "8080:8080"
+    environment:
+      # Surcharge application.properties pour pointer vers MySQL Docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/fabrication_db?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - fabrication-network
+
+  # ================================
+  # SERVICE 3 : Frontend Angular (Nginx)
+  # Utilise le Dockerfile dans le dossier frontend/
+  # ================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend-fabrication
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - fabrication-network
+
+# Volume persistant pour MySQL
+volumes:
+  mysql_data:
+
+# Réseau interne entre les 3 conteneurs
+networks:
+  fabrication-network:
+    driver: bridge

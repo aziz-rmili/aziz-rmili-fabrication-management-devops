@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: production
+data:
+  LOG_LEVEL: "WARN"
+  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/fabrication_db_prod?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+  SPRING_JPA_SHOW_SQL: "false"
+  APP_ENV: "production"

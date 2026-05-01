@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: dev
+data:
+  LOG_LEVEL: "DEBUG"
+  SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/fabrication_db?createDatabaseIfNotExist=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+  SPRING_JPA_SHOW_SQL: "true"
+  APP_ENV: "development"
