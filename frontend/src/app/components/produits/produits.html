@@ -1,0 +1,80 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Produits</h1>
+    <p class="page-sub">Gestion du catalogue et des stocks</p>
+  </div>
+  <button class="btn-primary-custom" (click)="openCreate()">
+    <i class="bi bi-plus-lg"></i> Nouveau produit
+  </button>
+</div>
+ 
+<div class="card-custom">
+  <table class="table-custom">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Type</th>
+        <th>Stock</th>
+        <th>Fournisseur</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of produits">
+        <td><strong>{{ p.nom }}</strong></td>
+        <td>{{ p.type }}</td>
+        <td>
+          <span [class]="p.stock < 10 ? 'badge-annule' : 'badge-disponible'">
+            {{ p.stock }} unités
+          </span>
+        </td>
+        <td>{{ p.fournisseur }}</td>
+        <td>
+          <button class="btn-action" (click)="openEdit(p)" title="Modifier">
+            <i class="bi bi-pencil" style="color:#3b82f6"></i>
+          </button>
+          <button class="btn-action" (click)="delete(p.id!)" title="Supprimer">
+            <i class="bi bi-trash" style="color:#ef4444"></i>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="produits.length === 0">
+        <td colspan="5">
+          <div class="empty-state">
+            <i class="bi bi-box-seam"></i>
+            Aucun produit enregistré
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ 
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="showModal=false">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <h3>{{ isEditing ? 'Modifier le produit' : 'Nouveau produit' }}</h3>
+    <div class="form-group">
+      <label>Nom du produit</label>
+      <input [(ngModel)]="form.nom" placeholder="Ex: Moteur X" />
+    </div>
+    <div class="form-group">
+      <label>Type</label>
+      <input [(ngModel)]="form.type" placeholder="Ex: Mécanique" />
+    </div>
+    <div class="form-group">
+      <label>Stock</label>
+      <input type="number" [(ngModel)]="form.stock" min="0" />
+    </div>
+    <div class="form-group">
+      <label>Fournisseur</label>
+      <input [(ngModel)]="form.fournisseur" placeholder="Ex: Fournisseur Alpha" />
+    </div>
+    <div class="form-actions">
+      <button class="btn-cancel" (click)="showModal=false">Annuler</button>
+      <button class="btn-primary-custom" (click)="save()" [disabled]="loading">
+        {{ loading ? 'Enregistrement...' : (isEditing ? 'Modifier' : 'Créer') }}
+      </button>
+    </div>
+  </div>
+</div>

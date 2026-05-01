@@ -1,0 +1,127 @@
+.page-header {
+  margin-bottom: 24px;
+}
+ 
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+ 
+.page-sub {
+  font-size: 13px;
+  color: #64748b;
+  margin: 4px 0 0;
+}
+ 
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+ 
+.stat-card {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+ 
+.stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+ 
+.stat-icon.blue { background: #dbeafe; color: #1d4ed8; }
+.stat-icon.orange { background: #fef3c7; color: #d97706; }
+.stat-icon.purple { background: #ede9fe; color: #7c3aed; }
+.stat-icon.green { background: #dcfce7; color: #166534; }
+ 
+.stat-label {
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+ 
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+}
+ 
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+ 
+.card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+ 
+.link-more {
+  font-size: 12px;
+  color: #3b82f6;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+ 
+.link-more:hover {
+  color: #1d4ed8;
+}
+ 
+.machines-list {
+  padding: 8px 0;
+}
+ 
+.machine-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+ 
+.machine-item:last-child {
+  border-bottom: none;
+}
+ 
+.machine-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+ 
+.machine-icon {
+  font-size: 18px;
+  color: #94a3b8;
+}
+ 
+.machine-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1e293b;
+}
+ 
+.machine-date {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 2px;
+}

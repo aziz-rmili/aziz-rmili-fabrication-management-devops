@@ -1,0 +1,146 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Ordres de fabrication</h1>
+    <p class="page-sub">Création et suivi des ordres</p>
+  </div>
+  <button class="btn-primary-custom" (click)="openCreate()">
+    <i class="bi bi-plus-lg"></i> Nouvel ordre
+  </button>
+</div>
+
+<!-- Filtres rapides par état -->
+<div class="filters-bar">
+  <span class="filter-label">Filtrer :</span>
+  <span class="badge-en-attente filter-badge">EN ATTENTE</span>
+  <span class="badge-en-cours filter-badge">EN COURS</span>
+  <span class="badge-termine filter-badge">TERMINÉ</span>
+  <span class="badge-annule filter-badge">ANNULÉ</span>
+</div>
+
+<div class="card-custom">
+  <table class="table-custom">
+    <thead>
+      <tr>
+        <th>Projet</th>
+        <th>Produit</th>
+        <th>Quantité</th>
+        <th>Machine</th>
+        <th>Employé</th>
+        <th>Date</th>
+        <th>État</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let o of ordres">
+        <td><strong>{{ o.projet }}</strong></td>
+        <td>{{ getProduitNom(o) }}</td>
+        <td>{{ o.quantite }}</td>
+        <td>{{ getMachineNom(o) }}</td>
+        <td>{{ getEmployeNom(o) }}</td>
+        <td>{{ o.date }}</td>
+        <td><span [class]="getBadgeClass(o.etat)">{{ o.etat }}</span></td>
+        <td class="actions-cell">
+          <!-- Bouton avancement état -->
+          <button class="btn-action"
+            *ngIf="getProchainEtat(o.etat)"
+            (click)="changerEtat(o.id!, getProchainEtat(o.etat)!)"
+            [title]="getProchainLabel(o.etat)">
+            <i class="bi bi-arrow-right-circle-fill"
+              [style.color]="o.etat === 'EN_ATTENTE' ? '#3b82f6' : '#22c55e'"></i>
+          </button>
+          <!-- Annuler -->
+          <button class="btn-action"
+            *ngIf="o.etat === 'EN_ATTENTE' || o.etat === 'EN_COURS'"
+            (click)="changerEtat(o.id!, 'ANNULE')"
+            title="Annuler">
+            <i class="bi bi-x-circle" style="color:#ef4444"></i>
+          </button>
+          <!-- Modifier -->
+          <button class="btn-action" (click)="openEdit(o)" title="Modifier">
+            <i class="bi bi-pencil" style="color:#64748b"></i>
+          </button>
+          <!-- Supprimer -->
+          <button class="btn-action" (click)="delete(o.id!)" title="Supprimer">
+            <i class="bi bi-trash" style="color:#ef4444"></i>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="ordres.length === 0">
+        <td colspan="8">
+          <div class="empty-state">
+            <i class="bi bi-clipboard-x"></i>
+            Aucun ordre de fabrication enregistré
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal création / modification -->
+<div class="modal-overlay" *ngIf="showModal" (click)="showModal=false">
+  <div class="modal-box modal-large" (click)="$event.stopPropagation()">
+    <h3>{{ isEditing ? 'Modifier l\'ordre' : 'Nouvel ordre de fabrication' }}</h3>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nom du projet</label>
+        <input [(ngModel)]="form.projet" placeholder="Ex: Projet Alpha" />
+      </div>
+
+      <div class="form-group">
+        <label>Produit <span class="required">*</span></label>
+        <select [(ngModel)]="selectedProduitId">
+          <option [ngValue]="null">-- Choisir un produit --</option>
+          <option *ngFor="let p of produits" [ngValue]="p.id">{{ p.nom }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Quantité</label>
+        <input type="number" [(ngModel)]="form.quantite" min="1" />
+      </div>
+
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" [(ngModel)]="form.date" />
+      </div>
+
+      <div class="form-group">
+        <label>Machine (optionnel)</label>
+        <select [(ngModel)]="selectedMachineId">
+          <option [ngValue]="null">-- Aucune machine --</option>
+          <option *ngFor="let m of machines" [ngValue]="m.id">{{ m.nom }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Employé (optionnel)</label>
+        <select [(ngModel)]="selectedEmployeId">
+          <option [ngValue]="null">-- Aucun employé --</option>
+          <option *ngFor="let e of employes" [ngValue]="e.id">{{ e.nom }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>État</label>
+        <select [(ngModel)]="form.etat">
+          <option value="EN_ATTENTE">En attente</option>
+          <option value="EN_COURS">En cours</option>
+          <option value="TERMINE">Terminé</option>
+          <option value="ANNULE">Annulé</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-cancel" (click)="showModal=false">Annuler</button>
+      <button class="btn-primary-custom" (click)="save()"
+        [disabled]="loading || !selectedProduitId">
+        <i class="bi bi-check-lg"></i>
+        {{ loading ? 'Enregistrement...' : (isEditing ? 'Modifier' : 'Créer') }}
+      </button>
+    </div>
+  </div>
+</div>

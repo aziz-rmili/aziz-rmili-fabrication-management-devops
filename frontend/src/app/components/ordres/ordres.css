@@ -1,0 +1,47 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.page-title { font-size: 22px; font-weight: 700; color: #1e293b; margin: 0; }
+.page-sub { font-size: 13px; color: #64748b; margin: 4px 0 0; }
+
+.filters-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.filter-badge {
+  cursor: default;
+}
+
+.actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.modal-large {
+  width: 600px !important;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}

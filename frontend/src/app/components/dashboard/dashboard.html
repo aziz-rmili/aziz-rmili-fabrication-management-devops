@@ -1,0 +1,108 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Tableau de bord</h1>
+    <p class="page-sub">Vue d'ensemble de la production</p>
+  </div>
+</div>
+ 
+<!-- Stats -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon blue"><i class="bi bi-clipboard-check-fill"></i></div>
+    <div>
+      <div class="stat-label">Total ordres</div>
+      <div class="stat-value">{{ totalOrdres }}</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon orange"><i class="bi bi-hourglass-split"></i></div>
+    <div>
+      <div class="stat-label">En attente</div>
+      <div class="stat-value">{{ ordresEnAttente }}</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon purple"><i class="bi bi-arrow-repeat"></i></div>
+    <div>
+      <div class="stat-label">En cours</div>
+      <div class="stat-value">{{ ordresEnCours }}</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon green"><i class="bi bi-check-circle-fill"></i></div>
+    <div>
+      <div class="stat-label">Terminés</div>
+      <div class="stat-value">{{ ordresTermines }}</div>
+    </div>
+  </div>
+</div>
+ 
+<!-- Deux colonnes -->
+<div class="dashboard-grid">
+ 
+  <!-- Ordres récents -->
+  <div class="card-custom">
+    <div class="card-header-custom">
+      <span class="card-title">Ordres récents</span>
+      <a routerLink="/ordres" class="link-more">Voir tout <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <table class="table-custom">
+      <thead>
+        <tr>
+          <th>Projet</th>
+          <th>Quantité</th>
+          <th>Date</th>
+          <th>État</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ordre of ordres">
+          <td><strong>{{ ordre.projet }}</strong></td>
+          <td>{{ ordre.quantite }}</td>
+          <td>{{ ordre.date }}</td>
+          <td><span [class]="getBadgeClass(ordre.etat)">{{ ordre.etat }}</span></td>
+        </tr>
+        <tr *ngIf="ordres.length === 0">
+          <td colspan="4" class="empty-state">
+            <i class="bi bi-inbox"></i>
+            Aucun ordre pour l'instant
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+ 
+  <!-- État des machines -->
+  <div class="card-custom">
+    <div class="card-header-custom">
+      <span class="card-title">État des machines</span>
+      <a routerLink="/machines" class="link-more">Gérer <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="machines-list">
+      <div *ngFor="let machine of machines" class="machine-item">
+        <div class="machine-info">
+          <i class="bi bi-cpu-fill machine-icon"></i>
+          <div>
+            <div class="machine-name">{{ machine.nom }}</div>
+            <div class="machine-date" *ngIf="machine.derniereMaintenance">
+              Dernière maintenance : {{ machine.derniereMaintenance }}
+            </div>
+            <div class="machine-date" *ngIf="!machine.derniereMaintenance">
+              Jamais maintenue
+            </div>
+          </div>
+        </div>
+        <span [ngClass]="{
+          'badge-disponible': machine.etat === 'DISPONIBLE',
+          'badge-maintenance': machine.etat === 'EN_MAINTENANCE',
+          'badge-hors-service': machine.etat === 'HORS_SERVICE'
+        }">{{ machine.etat }}</span>
+      </div>
+      <div *ngIf="machines.length === 0" class="empty-state">
+        <i class="bi bi-cpu"></i>
+        Aucune machine enregistrée
+      </div>
+    </div>
+  </div>
+ 
+</div>

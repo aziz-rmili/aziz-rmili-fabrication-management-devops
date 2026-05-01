@@ -1,0 +1,87 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Machines</h1>
+    <p class="page-sub">Gestion des machines et des maintenances</p>
+  </div>
+  <button class="btn-primary-custom" (click)="openCreate()">
+    <i class="bi bi-plus-lg"></i> Nouvelle machine
+  </button>
+</div>
+ 
+<div class="card-custom">
+  <table class="table-custom">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>État</th>
+        <th>Dernière maintenance</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let m of machines">
+        <td>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i class="bi bi-cpu-fill" style="color:#94a3b8;font-size:16px;"></i>
+            <strong>{{ m.nom }}</strong>
+          </div>
+        </td>
+        <td><span [class]="getBadgeClass(m.etat)">{{ m.etat }}</span></td>
+        <td>{{ m.derniereMaintenance || 'Jamais maintenue' }}</td>
+        <td>
+          <button class="btn-action" (click)="openEdit(m)" title="Modifier">
+            <i class="bi bi-pencil" style="color:#3b82f6"></i>
+          </button>
+          <button class="btn-action"
+            *ngIf="m.etat === 'DISPONIBLE'"
+            (click)="demarrerMaintenance(m.id!)"
+            title="Démarrer maintenance">
+            <i class="bi bi-tools" style="color:#f59e0b"></i>
+          </button>
+          <button class="btn-action"
+            *ngIf="m.etat === 'EN_MAINTENANCE'"
+            (click)="terminerMaintenance(m.id!)"
+            title="Terminer maintenance">
+            <i class="bi bi-check-circle" style="color:#22c55e"></i>
+          </button>
+          <button class="btn-action" (click)="delete(m.id!)" title="Supprimer">
+            <i class="bi bi-trash" style="color:#ef4444"></i>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="machines.length === 0">
+        <td colspan="4">
+          <div class="empty-state">
+            <i class="bi bi-cpu"></i>
+            Aucune machine enregistrée
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+ 
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="showModal=false">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <h3>{{ isEditing ? 'Modifier la machine' : 'Nouvelle machine' }}</h3>
+    <div class="form-group">
+      <label>Nom de la machine</label>
+      <input [(ngModel)]="form.nom" placeholder="Ex: Fraiseuse CNC-01" />
+    </div>
+    <div class="form-group">
+      <label>État</label>
+      <select [(ngModel)]="form.etat">
+        <option value="DISPONIBLE">Disponible</option>
+        <option value="EN_MAINTENANCE">En maintenance</option>
+        <option value="HORS_SERVICE">Hors service</option>
+      </select>
+    </div>
+    <div class="form-actions">
+      <button class="btn-cancel" (click)="showModal=false">Annuler</button>
+      <button class="btn-primary-custom" (click)="save()" [disabled]="loading">
+        {{ loading ? 'Enregistrement...' : (isEditing ? 'Modifier' : 'Créer') }}
+      </button>
+    </div>
+  </div>
+</div>
