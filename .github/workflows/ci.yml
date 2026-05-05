@@ -37,6 +37,22 @@ jobs:
       - name: Build JAR
         run: cd backend && mvn clean package -DskipTests
 
+      - name: OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'fabrication-backend'
+          path: 'backend'
+          format: 'HTML'
+          args: >
+            --failOnCVSS 9
+            --enableRetired
+
+      - name: Upload OWASP report
+        uses: actions/upload-artifact@v4
+        with:
+          name: owasp-report
+          path: reports/
+
       - name: SonarQube Analysis
         run: |
           cd backend && mvn sonar:sonar \
@@ -109,7 +125,7 @@ jobs:
         with:
           image-ref: shazzam/fabrication-backend:latest
           format: table
-          exit-code: '0'
+          exit-code: '1'
           severity: CRITICAL,HIGH
 
       - name: Trivy scan Frontend
@@ -117,7 +133,7 @@ jobs:
         with:
           image-ref: shazzam/fabrication-frontend:latest
           format: table
-          exit-code: '0'
+          exit-code: '1'
           severity: CRITICAL,HIGH
 
       - name: Push Backend image
