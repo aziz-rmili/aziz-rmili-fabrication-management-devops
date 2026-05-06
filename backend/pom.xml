@@ -20,7 +20,7 @@
     <properties>
         <java.version>17</java.version>
 	<!-- Fix CVE-2025-24813 et CVE-2026-29145 -->
-    	<tomcat.version>10.1.35</tomcat.version>
+    	<tomcat.version>10.1.53</tomcat.version>
         <!-- SonarCloud — à adapter avec ton organisation SonarCloud -->
         <sonar.organization>aziz-rmili</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>

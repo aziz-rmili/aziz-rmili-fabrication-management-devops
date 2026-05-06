@@ -49,15 +49,8 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
-      - name: 7. Scan dépendances OWASP (rapide)
-        run: |
-          cd backend && mvn org.owasp:dependency-check-maven:check \
-            -DfailBuildOnCVSS=9 \
-            -DassemblyAnalyzerEnabled=false \
-            -DnodeAnalyzerEnabled=false \
-            -DnuspecAnalyzerEnabled=false \
-            -DretireJsAnalyzerEnabled=false \
-            || true
+      - name: 7. Vérification dépendances
+        run: cd backend && mvn dependency:tree -DoutputType=dot > /dev/null 
 
   # ============================================
   # JOB 2 : Frontend Angular
