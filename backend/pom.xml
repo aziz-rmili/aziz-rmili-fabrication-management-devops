@@ -6,158 +6,100 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!--
-    ============================================================
-     PARENT SPRING BOOT
-     C'est le "parent" qui gère automatiquement toutes les
-     versions des bibliothèques pour nous.
-     On n'a pas besoin d'écrire les versions manuellement.
-    ============================================================
-    -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.0</version>
     </parent>
 
-    <!--
-    ============================================================
-     IDENTIFICATION DU PROJET
-     groupId  = nom de ton organisation (comme un package Java)
-     artifactId = nom du projet
-     version  = version actuelle
-    ============================================================
-    -->
     <groupId>com.gestion</groupId>
     <artifactId>fabrication</artifactId>
     <version>1.0.0</version>
     <name>Gestion des Ordres de Fabrication</name>
 
     <properties>
-        <!-- On utilise Java 17 (version moderne et stable) -->
         <java.version>17</java.version>
+	<!-- Fix CVE-2025-24813 et CVE-2026-29145 -->
+    	<tomcat.version>10.1.35</tomcat.version>
+        <!-- SonarCloud — à adapter avec ton organisation SonarCloud -->
+        <sonar.organization>aziz-rmili</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.projectKey>aziz-rmili_fabrication-management</sonar.projectKey>
     </properties>
 
     <dependencies>
 
-        <!--
-        ============================================================
-         1. SPRING WEB
-         Cours du prof slide 3 : Framework Spring Boot
-         Permet de créer des endpoints REST (@RestController,
-         @GetMapping, @PostMapping...)
-         Sans cette dépendance : pas d'API REST possible.
-        ============================================================
-        -->
+        <!-- Spring Web : REST API -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!--
-        ============================================================
-         2. SPRING DATA JPA
-         Cours du prof slide 3 : "Ajouter les dépendances
-         MySQL et Spring-Data-JPA"
-         Fournit JpaRepository avec toutes ses méthodes CRUD
-         (save, findAll, findById, deleteById...)
-         Gère Hibernate automatiquement en arrière-plan.
-        ============================================================
-        -->
+        <!-- Spring Data JPA -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!--
-        ============================================================
-         3. SPRING VALIDATION
-         Cours du prof slides 39-40 : "La validation des entités"
-         Fournit les annotations de validation :
-           @NotBlank  → champ ne doit pas être vide
-           @NotNull   → champ ne doit pas être null
-           @Min(1)    → valeur minimale
-           @Size      → longueur min/max
-           @Email     → doit être un email valide
-           @Pattern   → validation par expression régulière
-        ============================================================
-        -->
+        <!-- Validation Bean (@NotBlank, @NotNull...) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!--
-        ============================================================
-         4. CONNECTEUR MYSQL
-         Cours du prof slide 10 : "Ajouter les dépendances MySQL"
-         Permet à Spring Boot de se connecter à MySQL.
-         scope="runtime" : utilisé seulement à l'exécution,
-         pas pendant la compilation.
-        ============================================================
-        -->
+        <!-- MySQL (production) -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
 
-        <!--
-        ============================================================
-         5. LOMBOK
-         Outil qui réduit le code répétitif.
-         Au lieu d'écrire manuellement les getters/setters/
-         constructeurs, on utilise des annotations :
-           @Data           → génère getters + setters + equals + hashCode
-           @NoArgsConstructor → génère constructeur sans paramètres
-           @AllArgsConstructor → génère constructeur avec tous les paramètres
-           @Builder        → pattern Builder
-         IMPORTANT : requis par JPA pour le constructeur vide
-        ============================================================
-        -->
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
 
-        <!--
-        ============================================================
-         6. SPRINGDOC OPENAPI (SWAGGER)
-         Génère automatiquement la documentation interactive de
-         l'API à partir de tes annotations @RestController.
-         Accessible sur : http://localhost:8080/swagger-ui.html
-         Permet de tester tous tes endpoints sans Postman.
-        ============================================================
-        -->
+        <!-- Swagger/OpenAPI -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.3.0</version>
+            <version>2.2.0</version>
         </dependency>
 
-        <!--
-        ============================================================
-         7. SPRING BOOT TEST
-         Pour écrire et lancer les tests unitaires.
-         scope="test" : utilisé seulement pendant les tests.
-        ============================================================
-        -->
+        <!-- Spring Boot Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
 
+        <!-- ✅ H2 : base en mémoire pour les tests (CI/CD sans MySQL) -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ✅ Actuator : expose /actuator/health et /actuator/metrics -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- ✅ Micrometer Prometheus : expose /actuator/prometheus pour Grafana -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
-            <!--
-            Plugin Maven Spring Boot : permet de lancer
-            l'application avec la commande : mvn spring-boot:run
-            et de créer le fichier JAR exécutable.
-            -->
+
+            <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -170,6 +112,41 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <!-- ✅ JaCoCo : couverture de code (rapport pour SonarQube) -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.11</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- ✅ Checkstyle : lint Java (analyse qualité du code) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <!-- Règles Google Style simplifié -->
+                    <configLocation>google_checks.xml</configLocation>
+                    <failsOnError>false</failsOnError>
+                    <consoleOutput>true</consoleOutput>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
